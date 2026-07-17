@@ -4,15 +4,28 @@
  */
 
 export function buildPart5Prompt(count) {
-  return `Hãy tạo ${count} câu hỏi trắc nghiệm tiếng Anh bám sát cấu trúc phần thi TOEIC Part 5 (Incomplete Sentences).
+  return `Hãy đóng vai trò là một chuyên gia khảo thí TOEIC chuyên nghiệp. Tạo đúng ${count} câu hỏi trắc nghiệm tiếng Anh bám sát cấu trúc phần thi TOEIC Part 5 (Incomplete Sentences).
 Mỗi câu hỏi phải là một câu tiếng Anh hoàn chỉnh có chứa một khoảng trống ký hiệu là '_______'.
-Cung cấp đúng 4 lựa chọn (options) tương ứng với A, B, C, D.
 Phân chia cân đối các chủ đề: Grammar (Ngữ pháp), Vocabulary (Từ vựng), Word Forms (Từ loại).
-Đáp án đúng (correctAnswer) là chỉ số index từ 0 đến 3 (0 đại diện cho A, 1 đại diện cho B, 2 cho C, 3 cho D).
-Hãy cung cấp dịch nghĩa tiếng Việt (translation) và giải thích chi tiết lý do chọn đáp án đúng bằng tiếng Việt (explanation).
 Độ khó (difficulty) chọn ngẫu nhiên giữa "Easy", "Medium", "Hard".
 Tạo các id ngẫu nhiên độc nhất dạng chuỗi như 'q1', 'q2'...
 Đảm bảo tất cả nội dung phong phú, chất lượng cao, đúng cấu trúc câu thi TOEIC thực tế.
+
+QUY TRÌNH TẠO MỖI CÂU HỎI (BẮT BUỘC):
+Bước 1 — TẠO TRƯỚC 4 ĐÁP ÁN KHÁC NHAU hoàn toàn (4 cụm từ/cụm ngữ pháp HOÀN TOÀN KHÔC NHAU).
+Bước 2 — Xác định đáp án đúng (correctAnswer = index 0, 1, 2 hoặc 3).
+Bước 3 — Viết câu hỏi với khoảng trống mà đáp án đúng vừa tạo mới lấp vào.
+=> TUYỆT ĐỐI KHÔNG được tạo câu hỏi trước rồi mới nghĩ đáp án. PHẢI tạo 4 đáp án KHÁC NHAU trước.
+
+QUAN TRỌNG VỀ OPTIONS:
+- 4 đáp án (options) PHẢI khác nhau hoàn toàn về nghĩa và từ vựng.
+- KHÔNG ĐƯỢC có 2 đáp án giống nhau hoặc có nghĩa trùng lặp.
+- Mỗi đáp án phải là một ứng viên hợp lý nhưng chỉ MỘT đáp án mới đúng ngữ pháp/từ vựng nhất.
+- Đáp án sai phải là các từ/cụm từ cũng phổ biến trong ngữ cảnh tương tự nhưng sai ngữ pháp hoặc sai nghĩa.
+
+Đáp án đúng (correctAnswer) là chỉ số index từ 0 đến 3 (0 = A, 1 = B, 2 = C, 3 = D).
+Hãy cung cấp dịch nghĩa tiếng Việt (translation) và giải thích chi tiết lý do chọn đáp án đúng bằng tiếng Việt (explanation).
+Trong explanation, PHẢI giải thích tại sao đáp án đúng hợp lý VÀ tại sao mỗi đáp án sai là sai.
 
 Trả về JSON với cấu trúc:
 {
@@ -40,8 +53,21 @@ Tổng cộng 4 câu hỏi trong mỗi đoạn văn cần phủ các dạng bài
 - Ít nhất 1 câu về Từ loại (Word Forms)
 - Đúng 1 câu về Điền câu thích hợp vào đoạn văn (Sentence Insertion)
 
+QUY TRÌNH TẠO MỖI CÂU HỎI (BẮT BUỘC):
+Bước 1 — TẠO TRƯỚC 4 ĐÁP ÁN KHÁC NHAU hoàn toàn (4 cụm từ HOÀN TOÀN KHÁC NHAU).
+Bước 2 — Xác định đáp án đúng (correctAnswer = index 0, 1, 2 hoặc 3).
+Bước 3 — Viết câu hỏi cho chỗ trống mà đáp án đúng vừa tạo mới lấp vào chính xác nhất.
+=> TUYỆT ĐỐI KHÔNG được tạo câu hỏi trước rồi mới nghĩ đáp án. PHẢI tạo 4 đáp án KHÁC NHAU trước.
+
+QUAN TRỌNG VỀ OPTIONS:
+- 4 đáp án (options) PHẢI khác nhau hoàn toàn về nghĩa và từ vựng.
+- KHÔNG ĐƯỢC có 2 đáp án giống nhau hoặc có nghĩa trùng lặp.
+- Mỗi đáp án phải là một ứng viên hợp lý nhưng chỉ MỘT đáp án mới đúng ngữ pháp/từ vựng nhất trong ngữ cảnh đoạn văn.
+- Đáp án sai phải là các từ/cụm từ cũng phổ biến nhưng sai ngữ pháp hoặc sai nghĩa trong ngữ cảnh.
+
 Nội dung đoạn văn có thể là email công việc, thư báo, bản ghi nhớ, quảng cáo... văn phong trang trọng, chuyên nghiệp chuẩn đề thi TOEIC.
 Giải thích lý do lựa chọn đáp án chi tiết bằng tiếng Việt trong trường explanation.
+Trong explanation, PHẢI giải thích tại sao đáp án đúng hợp lý VÀ tại sao mỗi đáp án sai là sai.
 Tạo các id ngẫu nhiên độc nhất dạng chuỗi cho đoạn văn (ví dụ: 'p6-p1') và các câu hỏi (ví dụ: 'p6-p1-q1').
 Đảm bảo tất cả nội dung phong phú, chất lượng cao, đúng cấu trúc câu thi TOEIC thực tế.
 
@@ -70,6 +96,21 @@ Trả về JSON với cấu trúc:
 export function buildPart7Prompt(passageType, count, startQuestionNumber) {
   return `Hãy đóng vai trò là một chuyên gia khảo thí TOEIC chuyên nghiệp. Tạo đúng ${count} đoạn văn luyện tập TOEIC Part 7 (Reading Comprehension) thuộc thể loại ${passageType} Passage.
 Bắt đầu đánh số thứ tự câu hỏi từ câu số ${startQuestionNumber}.
+
+QUY TRÌNH TẠO MỖI CÂU HỎI (BẮT BUỘC):
+Bước 1 — TẠO TRƯỚC 4 ĐÁP ÁN KHÁC NHAU hoàn toàn (4 câu trả lời HOÀN TOÀN KHÁC NHAU).
+Bước 2 — Xác định đáp án đúng (correctAnswer = index 0, 1, 2 hoặc 3).
+Bước 3 — Viết câu hỏi đọc hiểu mà đáp án đúng vừa tạo mới trả lời chính xác nhất.
+=> TUYỆT ĐỐI KHÔNG được tạo câu hỏi trước rồi mới nghĩ đáp án. PHẢI tạo 4 đáp án KHÁC NHAU trước.
+
+QUAN TRỌNG VỀ OPTIONS:
+- 4 đáp án (options) PHẢI khác nhau hoàn toàn về nội dung và nghĩa.
+- KHÔNG ĐƯỢC có 2 đáp án giống nhau hoặc có nghĩa trùng lặp.
+- Mỗi đáp án phải là một câu trả lời hợp lý nhưng chỉ MỘT đáp án mới chính xác nhất dựa trên thông tin trong đoạn văn.
+- Đáp án sai phải là các câu cũng hợp lý về mặt ngữ pháp nhưng sai thông tin so với đoạn văn.
+
+Đáp án đúng (correctAnswer) là chỉ số index từ 0 đến 3 (0 = A, 1 = B, 2 = C, 3 = D).
+Trong explanation, PHẢI giải thích tại sao đáp án đúng dựa trên thông tin cụ thể trong đoạn văn VÀ tại sao mỗi đáp án sai là sai.
 
 Quy định cấu trúc chi tiết:
 - Với mỗi đoạn văn (passage):
