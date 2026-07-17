@@ -133,6 +133,7 @@ curl -X DELETE http://localhost:3000/api/toeic/stats/user1
 | `POST` | `/api/toeic/part5` | `{ count: number, apiKey?: string }` | Sinh câu hỏi Part 5 |
 | `POST` | `/api/toeic/part6` | `{ count: number, apiKey?: string }` | Sinh đoạn văn Part 6 |
 | `POST` | `/api/toeic/part7` | `{ passageType: 'Single'\|'Double'\|'Triple', count: number, startQuestionNumber: number, apiKey?: string }` | Sinh đoạn văn Part 7 |
+| `POST` | `/api/toeic/part7/batch` | `{ batches: Array, apiKey?: string }` | Sinh nhiều batch Part 7 trong 1 request |
 
 **Ví dụ:**
 
@@ -187,7 +188,9 @@ toeic-reading-be/
 │   │       ├── stats.routes.test.js
 │   │       └── toeic.routes.test.js
 │   ├── services/
-│   │   └── omniroute.service.js   # OmniRoute API client
+│   │   ├── omniroute.service.js   # OmniRoute API client + safeParseJSON
+│   │   └── __tests__/
+│   │       └── omniroute.service.test.js
 │   ├── prompts/
 │   │   ├── toeic.prompts.js       # Prompt templates
 │   │   └── __tests__/
@@ -220,9 +223,10 @@ Dự án sử dụng **Vitest** cho unit testing với **supertest** cho HTTP ro
 | `stats-store.js` | 11 | Per-user CRUD, path traversal protection, persistence |
 | `keys.routes.js` | 8 | GET/PUT/DELETE endpoints, validation, error handling |
 | `stats.routes.js` | 8 | GET/PUT/DELETE endpoints, validation, default stats |
-| `toeic.routes.js` | 12 | Part 5/6/7 generation, key resolution, validation, error handling |
+| `toeic.routes.js` | 19 | Part 5/6/7/batch generation, key resolution, validation, error handling |
 | `toeic.prompts.js` | 14 | Prompt template generation for all parts |
-| **Total** | **59** | |
+| `omniroute.service.js` | 14 | `safeParseJSON` sanitization for AI-generated JSON |
+| **Total** | **80** | |
 
 ### Chạy tests
 

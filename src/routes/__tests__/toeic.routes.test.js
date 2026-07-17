@@ -182,4 +182,111 @@ describe('toeic.routes', () => {
       expect(res.status).toBe(400);
     });
   });
+
+  describe('POST /api/toeic/part7/batch', () => {
+    it('generates all batches in a single request', async () => {
+      const mockSingle = [{ id: 'p7-s1', passageType: 'Single', questions: [] }];
+      const mockDouble = [{ id: 'p7-d1', passageType: 'Double', questions: [] }];
+      generateToeicPart7Passages
+        .mockResolvedValueOnce(mockSingle)
+        .mockResolvedValueOnce(mockSingle)
+        .mockResolvedValueOnce(mockDouble);
+
+      const res = await request(app)
+        .post('/api/toeic/part7/batch')
+        .send({
+          batches: [
+            { passageType: 'Single', count: 1, startQuestionNumber: 147 },
+            { passageType: 'Single', count: 1, startQuestionNumber: 158 },
+            { passageType: 'Double', count: 1, startQuestionNumber: 176 },
+          ],
+          apiKey: 'test-key',
+        });
+
+      expect(res.status).toBe(200);
+      expect(res.body.passages).toHaveLength(3);
+      expect(generateToeicPart7Passages).toHaveBeenCalledTimes(3);
+      expect(generateToeicPart7Passages).toHaveBeenCalledWith('Single', 1, 147, 'test-key');
+      expect(generateToeicPart7Passages).toHaveBeenCalledWith('Single', 1, 158, 'test-key');
+      expect(generateToeicPart7Passages).toHaveBeenCalledWith('Double', 1, 176, 'test-key');
+    });
+
+    it('uses stored key when no apiKey provided', async () => {
+      getKey.mockReturnValue('stored-key');
+      generateToeicPart7Passages.mockResolvedValue([{ id: 'p7-s1', passageType: 'Single', questions: [] }]);
+
+      const res = await request(app)
+        .post('/api/toeic/part7/batch')
+        .send({
+          batches: [
+            { passageType: 'Single', count: 1, startQuestionNumber: 147 },
+          ],
+        });
+
+      expect(res.status).toBe(200);
+      expect(generateToeicPart7Passages).toHaveBeenCalledWith('Single', 1, 147, 'stored-key');
+    });
+
+    it('returns 400 when batches is empty', async () => {
+      const res = await request(app)
+        .post('/api/toeic/part7/batch')
+        .send({ batches: [], apiKey: 'test-key' });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error).toContain('non-empty array');
+    });
+
+    it('returns 400 when batches is not an array', async () => {
+      const res = await request(app)
+        .post('/api/toeic/part7/batch')
+        .send({ batches: 'invalid', apiKey: 'test-key' });
+
+      expect(res.status).toBe(400);
+    });
+
+    it('returns 400 for invalid passageType in a batch', async () => {
+      const res = await request(app)
+        .post('/api/toeic/part7/batch')
+        .send({
+          batches: [
+            { passageType: 'Invalid', count: 1, startQuestionNumber: 147 },
+          ],
+          apiKey: 'test-key',
+        });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error).toContain('Batch 0');
+    });
+
+    it('returns 400 when no apiKey is available', async () => {
+      const res = await request(app)
+        .post('/api/toeic/part7/batch')
+        .send({
+          batches: [
+            { passageType: 'Single', count: 1, startQuestionNumber: 147 },
+          ],
+        });
+
+      expect(res.status).toBe(400);
+    });
+
+    it('returns 500 when a batch generation fails', async () => {
+      generateToeicPart7Passages
+        .mockResolvedValueOnce([{ id: 'p7-s1', passageType: 'Single', questions: [] }])
+        .mockRejectedValueOnce(new Error('OmniRoute API error'));
+
+      const res = await request(app)
+        .post('/api/toeic/part7/batch')
+        .send({
+          batches: [
+            { passageType: 'Single', count: 1, startQuestionNumber: 147 },
+            { passageType: 'Double', count: 1, startQuestionNumber: 176 },
+          ],
+          apiKey: 'test-key',
+        });
+
+      expect(res.status).toBe(500);
+      expect(res.body.error).toContain('OmniRoute API error');
+    });
+  });
 });
